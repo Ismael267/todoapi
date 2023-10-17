@@ -14,8 +14,8 @@ def is_valid_iso8601_date(date_str):
 
 def add_one_day_to_date(iso8601_date):
     try:
-        date_obj = datetime.fromisoformat(iso8601_date)
-        updated_date = date_obj + timedelta(days=1)
+        # date_obj = datetime.fromisoformat(iso8601_date)
+        updated_date = date_obj + timedelta(days=0.5)
         updated_iso8601_date = updated_date.isoformat()
         return updated_iso8601_date
     except ValueError:
@@ -79,7 +79,7 @@ def get_tasks(db: Session, skip: int = 0, limit: int = 100):
 
 def update_task(db, task_id, updated_data):
     """
-    Met à jour les données d'une tâche dans la base de données.
+    Met à jour l'etat  d'une tâche dans la base de données.
     """
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
 
@@ -96,7 +96,7 @@ def update_task(db, task_id, updated_data):
 
 def update_taskdate(db, task_id, updated_data):
     """
-    Met à jour les données d'une tâche dans la base de données.
+    Met à jour la date d'une tâche dans la base de données.
     """
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
 
@@ -112,12 +112,15 @@ def update_taskdate(db, task_id, updated_data):
 
 
 def updateByOneDay(db, task_id, updated_data):
+    """
+    Met à jour la date  d'une tâche d'un jour dans la base de données.
+    """
     db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
 
     if not db_task:
         raise HTTPException(status_code=404, detail="La tâche n'existe pas")
 
-    for key, value in updated_data.model().items():
+    for key, value in updated_data.items():
         if key == "dateOfRealisation":
             if is_valid_iso8601_date(value):
                

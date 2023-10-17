@@ -21,7 +21,8 @@ class User(UserBase):
 class TaskBase(BaseModel):
     task: str
     completed: bool = False
-    dateOfRealisation: str # iso 8601(%Y-%m-%d)
+    dateOfRealisation: datetime # iso 8601(%Y-%m-%d)
+    dateOfExecution:datetime
     
 
 
@@ -41,6 +42,7 @@ class Task(TaskBase):
 class TaskUpdate(BaseModel):
 
     completed: bool
+    dateOfExecution:datetime
 
 
 class TaskDelete(BaseModel):
@@ -50,4 +52,5 @@ class TaskDelete(BaseModel):
 
 class TaskDateUpdate(BaseModel):
 
-    dateOfRealisation: str
+    dateOfRealisation: datetime
+    dateOfExecution: datetime

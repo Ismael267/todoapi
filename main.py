@@ -83,6 +83,7 @@ def update_task(task_id: int, task_update: schemas.TaskUpdate, db: Session = Dep
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tâche non trouvée")
 
     updated_task = crud.update_task(db, task_id, task_update)
+    
     return updated_task
 
 
@@ -90,7 +91,7 @@ def update_task(task_id: int, task_update: schemas.TaskUpdate, db: Session = Dep
 def update_taskDate(task_id:int, task_updateDate:schemas.TaskDateUpdate, db:Session=Depends(get_db) ):
     db_task=crud.get_task(db,task_id)
     if db_task is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Tache non trouver')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Tache non trouvée')
     updated_taskDate=crud.update_task(db,task_id,task_updateDate)
     return updated_taskDate
     
