@@ -6,7 +6,7 @@ pip install -r requirements.txt
 ```
 # Project structure
 ```
-├── app
+├── todoapi
 |   |
 │   ├── core
 │   ├── crud
@@ -19,11 +19,5 @@ pip install -r requirements.txt
 │   ├── main.py
 │   ├── models
 │   ├── schemas
-|   |
-│   └── templates
-|
-├── migrations
-├── seeder
-|── .vscode
 
 ```
