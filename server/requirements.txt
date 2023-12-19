@@ -7,4 +7,4 @@ sqlalchemy-utils  # Facultatif si vous utilisez des types de colonnes spécifiqu
 pytz  # Facultatif si vous gérez des fuseaux horaires
 passlib  # Facultatif si vous utilisez le hachage de mot de passe
 fastapi-cors
-
+psycopg2
