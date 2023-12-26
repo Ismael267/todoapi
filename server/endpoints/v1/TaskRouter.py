@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException,status ,APIRouter
 from sqlalchemy.orm import Session
 from crud.TaskCrud import create_task,get_tasks,delete_task,get_task,update_task,updateByOneDay,add_one_day_to_date
 from schemas.TaskSchemas import TaskList,TaskDateUpdate,TaskUpdate,TaskCreate
-from core.auth_bearer import JWTBearer
+from core.auth_bearer import get_current_user
 from db.database import get_db
 
 
@@ -13,24 +13,24 @@ router= APIRouter(
 
 
 @router.post("/task/", response_model=TaskList )
-def create_one_task(task: TaskCreate, db: Session = Depends(get_db) ,dependencies=Depends(JWTBearer())):
+def create_one_task(task: TaskCreate, db: Session = Depends(get_db) ,dependencies=Depends(get_current_user)):
     return create_task(db=db, task=task)
 
 
 @router.get("/tasks/", response_model=list[TaskList])
-def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db) ,dependencies=Depends(JWTBearer())):
+def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db) ,dependencies=Depends(get_current_user)):
     tasks = get_tasks(db, skip=skip, limit=limit)
     return tasks
 
 
 @router.delete("/delete/task/{task_id}", response_model=TaskList )
-def delete_task(task_id: int, db: Session = Depends(get_db), dependencies= Depends(JWTBearer())):
+def delete_task(task_id: int, db: Session = Depends(get_db), dependencies= Depends(get_current_user)):
     task = delete_task(db, task_id)
     return task
 
 
 @router.put('/update/task/{task_id}', response_model=TaskList )
-def update_task(task_id: int, task_update: TaskUpdate, db: Session = Depends(get_db), dependencies= Depends(JWTBearer())):
+def update_task(task_id: int, task_update: TaskUpdate, db: Session = Depends(get_db), dependencies= Depends(get_current_user)):
     db_task = get_task(db, task_id)
     if db_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tâche non trouvée")
@@ -39,7 +39,7 @@ def update_task(task_id: int, task_update: TaskUpdate, db: Session = Depends(get
 
 
 @router.put('/update/taskDate/{task_id}',response_model=TaskList)
-def update_taskDate(task_id:int, task_updateDate:TaskDateUpdate, db:Session=Depends(get_db), dependencies =Depends(JWTBearer()) ):
+def update_taskDate(task_id:int, task_updateDate:TaskDateUpdate, db:Session=Depends(get_db), dependencies =Depends(get_current_user) ):
     db_task=get_task(db,task_id)
     if db_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Tache non trouvée')
@@ -48,7 +48,7 @@ def update_taskDate(task_id:int, task_updateDate:TaskDateUpdate, db:Session=Depe
     
 
 @router.put('/update/taskDatePlus/{task_id}', response_model=TaskList,tags=["Task"])
-def update_taskDate(task_id: int, db: Session = Depends(get_db), dependencies =Depends(JWTBearer())):
+def update_taskDate(task_id: int, db: Session = Depends(get_db), dependencies =Depends(get_current_user)):
     db_task = get_task(db, task_id) 
     if db_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tache non trouvée') 

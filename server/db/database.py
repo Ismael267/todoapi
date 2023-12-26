@@ -5,7 +5,6 @@ from sqlalchemy.ext.declarative import as_declarative,declared_attr
 from core.settings import settings
 
 
-# URL_DATABASE = 'postgresql://totoaazerty:gzJmUGpq.u89gKQ@postgresql-totoaazerty.alwaysdata.net/totoaazerty_azerty'
 def get_db():
     db = SessionLocal()
     try:
@@ -15,7 +14,6 @@ def get_db():
         
 engine = create_engine(settings.get_database_url())
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 
 @as_declarative()
 class Base(object):

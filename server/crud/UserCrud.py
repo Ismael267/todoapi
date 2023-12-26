@@ -33,6 +33,11 @@ def get_user_by_email(db: Session, email: str):
     """
     return db.query(User).filter(User.email == email).first()
 
+def get_user_by_username(db: Session, username: str):
+    """
+    Récupère un utilisateur par son username depuis la base de données.
+    """
+    return db.query(User).filter(User.username == username).first()
 
 
 def get_token(data,db):
@@ -51,7 +56,7 @@ def get_token(data,db):
             )
     _verify_user_access(user=user)
     return '' #return acces token et refresh token     
-        
+    
 def _verify_user_access(user:User):
     if not user.is_active:
         raise HTTPException(
@@ -65,3 +70,5 @@ def _verify_user_access(user:User):
             detail="Your account email is not verified yet.",
             headers={"WWW-Authenticate": "Bearer"},
         )    
+        
+        

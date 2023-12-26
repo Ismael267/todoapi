@@ -21,7 +21,16 @@ class User(BaseModel):
 
     class Config:
         orm_mode = True
-
+        
+class UserInDB(User):
+    hashed_password:str
+    username:str
+    
 class requestdetails(BaseModel):
     email:EmailStr
-    password:str
+    hashed_password:str
+    
+class userResponse(BaseModel):
+    email:EmailStr
+    username:str
+    
