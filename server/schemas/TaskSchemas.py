@@ -19,13 +19,13 @@ class TaskList(TaskBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TaskUpdate(BaseModel):
 
     completed: bool
-    dateOfExecution:datetime
+    from_attributes:datetime
 
 
 class TaskDelete(BaseModel):

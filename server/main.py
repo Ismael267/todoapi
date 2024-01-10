@@ -1,7 +1,7 @@
 from fastapi import  FastAPI
 from db.database import engine,Base
 from fastapi.middleware.cors import CORSMiddleware
-from endpoints.v1 import TaskRouter,UserRouter
+from endpoints.v1 import TaskRouter,UserRouter,GitHubRouter,FacebookRouter,GitLabRouter,LinkedinRouter
 
 
 
@@ -11,8 +11,11 @@ app = FastAPI()
 # Fonction de dépendance pour obtenir une session de base de données
 origins = [
   
-    "http://localhost",
+    "http://localhost:8000",
     "http://localhost:3000",
+    "https://www.facebook.com"
+    
+    
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +26,10 @@ app.add_middleware(
 )
 app.include_router(TaskRouter.router)
 app.include_router(UserRouter.router)
+app.include_router(GitHubRouter.router)
+app.include_router(GitLabRouter.router)
+app.include_router(FacebookRouter.router)
+app.include_router(LinkedinRouter.router)
 
 # def get_db():
 #     db = SessionLocal()

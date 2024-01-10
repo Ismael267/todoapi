@@ -34,9 +34,31 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER_NAME: str
     DB_PASSWORD: str
+    
+    GITLAB_APP_ID : str
+    GITLAB_APP_SECRET :str
+    GITLAB_REDIRECT_URI :str
+    
+    GITHUB_APP_ID :str
+    GITHUB_APP_SECRET: str
+    GITHUB_REDIRECT_URI:str
+    
+    FACEBOOK_APP_ID : str
+    FACEBOOK_APP_SECRET :str
+    FACEBOOK_REDIRECT_URI :str
+    FACEBOOK_API_VERSION :str
+    
+    LINKEDIN_CLIENT_ID :str
+    LINKEDIN_CLIENT_SECRET :str
+    LINKEDIN_REDIRECT_URI:str 
 
-   
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 43800  # 1 month
+
+ 
+    ALGORITHM :str
+    JWT_SECRET_KEY:str
+    JWT_REFRESH_SECRET_KEY:str
+    ACCESS_TOKEN_EXPIRE_MINUTES:int
+    REFRESH_TOKEN_EXPIRE_MINUTES:str  # 1 month
 
     # SECRET_KEY: str
     

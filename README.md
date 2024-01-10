@@ -4,7 +4,6 @@
 pip install -r requirements.txt
 
 ```
-
 # Project structure
 
 ```
@@ -17,6 +16,10 @@ pip install -r requirements.txt
 │   |   ├── endpoints
 │   |   │   ├── api.py
 │   |   │   └── v1
+                ├──FacebookRoute
+                ├──GitHubRoute
+                ├──GitLabRoute
+                ├──LinkedinRoute
 │   |   │       ├──userRoute
 │   |   │       └──taskRoute
 │   |   ├── main.py
