@@ -27,3 +27,4 @@ pip install -r requirements.txt
 │   |   ├── schemas
 
 ```
+# cd server 
