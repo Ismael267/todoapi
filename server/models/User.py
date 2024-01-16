@@ -1,4 +1,4 @@
-from sqlalchemy import  Column, String
+from sqlalchemy import  Column, String,Integer
 from sqlalchemy.orm import relationship
 from db.database import Base
 
@@ -9,4 +9,4 @@ class User(Base):
     hashed_password = Column(String)
     username = Column(String)
     tasks = relationship("Task", back_populates="owner")
-    
+    github_id=Column(Integer,unique=True,nullable=True)

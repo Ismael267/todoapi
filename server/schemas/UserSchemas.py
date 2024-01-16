@@ -5,6 +5,13 @@ from pydantic import EmailStr
 class UserBase(BaseModel):
     email: str
     hashed_password: str
+    
+class TokenAuth(BaseModel):
+    id_github:int
+    email:EmailStr
+    username:str
+    
+    
 
 
 class CreateUser(UserBase):

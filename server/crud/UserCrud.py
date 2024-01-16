@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from models.User import User
 from fastapi import HTTPException
-from core.security import get_password_hash,verify_password
+from core.security import get_password_hash,verify_password,create_access_token
+
 
 
 
@@ -72,3 +73,18 @@ def _verify_user_access(user:User):
         )    
         
         
+# def create_user(db, user_data: dict):
+#     user = User(
+#         github_id=user_data["id"],
+#         username=user_data.get("login"),
+#         email=user_data.get("email"),
+#         access_token=create_access_token(), 
+#     )
+#     db.add(user)
+#     db.commit()
+#     db.refresh(user)
+#     return user
+# def generate_password():
+#     length = random.randint(8,12)
+#     real_password= get_password_hash(length)
+#     return real_password
