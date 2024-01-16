@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Depends
 from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
+from db.database import get_db
 import httpx
 from typing import Optional, Dict
 from core.settings import settings
+from models.User import User
+from core.security import create_access_token,generate_password
+
 
 router = APIRouter(tags=["Auth/Facebook"])
 
@@ -45,7 +50,7 @@ async def login_with_facebook():
     return RedirectResponse(url=facebook_auth_url)
 
 @router.get("/auth/facebook/callback")
-async def Auth_callback(code: str):
+async def Auth_callback(code: str,db: Session = Depends(get_db)):
     access_token = await get_access_token(code)
     if not access_token:
         raise HTTPException(status_code=400, detail="Failed to retrieve access token")
@@ -54,4 +59,18 @@ async def Auth_callback(code: str):
     if not user_data:
         raise HTTPException(status_code=400, detail="Failed to retrieve user info")
 
-    return user_data
+    # return user_data
+    fb_user=db.query(User).filter(User.email==user_data["email"]).first()
+    if fb_user:
+        token = create_access_token(user_data["name"])
+    else:
+        new_user = User(
+            username=user_data["name"],
+            email=user_data["email"],
+            hashed_password=generate_password()
+        )
+        db.add(new_user)
+        db.commit()
+        token = create_access_token(user_data["email"])
+
+    return {"token": token, "token_type": "bearer"}

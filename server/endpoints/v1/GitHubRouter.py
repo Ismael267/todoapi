@@ -6,8 +6,8 @@ from core.settings import settings
 from db.database import get_db
 from sqlalchemy.orm import Session
 from models.User import User
-from core.security import create_access_token
-from core.security import generate_password
+from core.security import create_access_token,generate_password
+
 
 router = APIRouter(tags=["Auth/GitHub"])
 
@@ -82,13 +82,12 @@ async def auth_callback(code: str, db: Session = Depends(get_db)):
     if not user_data:
         raise HTTPException(status_code=400, detail="Failed to retrieve user info")
     # return user_data
-    gh_user = db.query(User).filter(User.github_id == user_data["id"]).first()
+    gh_user = db.query(User).filter(User.email == user_data["email"]).first()
 
     if gh_user:
         token = create_access_token(user_data["login"])
     else:
         new_user = User(
-            github_id=user_data["id"],
             username=user_data["login"],
             email=user_data["email"],
             hashed_password=generate_password()

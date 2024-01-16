@@ -9,4 +9,4 @@ class User(Base):
     hashed_password = Column(String)
     username = Column(String)
     tasks = relationship("Task", back_populates="owner")
-    github_id=Column(Integer,unique=True,nullable=True)
+   
