@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException,Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse,JSONResponse
+from fastapi.encoders import jsonable_encoder
 import httpx
 from typing import Optional, Dict
 from core.settings import settings
@@ -7,6 +8,8 @@ from db.database import get_db
 from sqlalchemy.orm import Session
 from models.User import User
 from core.security import create_access_token,generate_password
+from models.Response import Response
+
 
 router = APIRouter(tags=["Auth/LinkedIn"])
 
@@ -67,17 +70,28 @@ async def auth_callback(code: str,db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Failed to retrieve user info")
 
     # return user_data
-    lk_user=db.query(User).filter(User.email==user_data["email"]).first()
-    if lk_user:
-        token = create_access_token(user_data["name"])
-    else:
-        new_user = User(
+    new_user=db.query(Response).filter(Response.email==user_data["email"]).first()
+    if not  new_user:
+        new_user=Response(
             username=user_data["name"],
             email=user_data["email"],
             hashed_password=generate_password()
         )
         db.add(new_user)
         db.commit()
-        token = create_access_token(user_data["email"])
-
-    return {"token": token, "token_type": "bearer"}
+    token=create_access_token(new_user.email)
+    response_model=JSONResponse(
+        content={
+        "token":token,
+        "token_type":"Bearer",
+        "user":jsonable_encoder(new_user,exclude={
+            "hashed_password"
+        })}
+    )
+    return response_model
+        
+    
+        
+        
+        
+    

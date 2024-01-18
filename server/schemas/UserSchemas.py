@@ -33,11 +33,11 @@ class UserInDB(User):
     hashed_password:str
     username:str
     
-class requestdetails(BaseModel):
+class Requestdetails(BaseModel):
     email:EmailStr
     hashed_password:str
     
-class userResponse(BaseModel):
+class UserResponse(BaseModel):
     email:EmailStr
     username:str
     

@@ -3,7 +3,7 @@ from fastapi import Request, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from typing import Annotated
-from schemas.UserSchemas import userResponse
+from schemas.UserSchemas import UserResponse
 from core.settings import settings
 
 

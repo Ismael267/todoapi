@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException,Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.encoders import jsonable_encoder
 import httpx
 from typing import Optional, Dict
 from core.settings import settings
@@ -62,9 +63,10 @@ async def auth_callback(code: str,db: Session = Depends(get_db)):
 
     # return user_data
     lk_user=db.query(User).filter(User.email==user_data["email"]).first()
-    if lk_user:
-        token = create_access_token(user_data["username"])
-    else:
+    
+    
+    if not lk_user:
+
         new_user = User(
             username=user_data["username"],
             email=user_data["email"],
@@ -72,6 +74,13 @@ async def auth_callback(code: str,db: Session = Depends(get_db)):
         )
         db.add(new_user)
         db.commit()
-        token = create_access_token(user_data["email"])
+        token = create_access_token(lk_user.email)
 
-    return {"token": token, "token_type": "bearer"}
+    response_model=JSONResponse(content={
+        "token":token,
+        "token_type":"Bearer",
+        "user":jsonable_encoder(new_user,exclude={
+            "hashed_password"
+        })
+    })
+    return response_model

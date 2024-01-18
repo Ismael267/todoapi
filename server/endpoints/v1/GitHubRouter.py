@@ -1,12 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.encoders import jsonable_encoder
 import httpx
 from typing import Optional, Dict
 from core.settings import settings
 from db.database import get_db
 from sqlalchemy.orm import Session
 from models.User import User
+from models.Response import Response
 from core.security import create_access_token,generate_password
+from schemas.UserSchemas import UserResponse
+
 
 
 router = APIRouter(tags=["Auth/GitHub"])
@@ -34,9 +38,6 @@ async def get_access_token(code: str) -> Optional[str]:
         except httpx.HTTPError as e:
             raise HTTPException(status_code=500, detail=f"Failed to fetch access token: {str(e)}")
 
-from typing import Optional, Dict
-import httpx
-from fastapi import HTTPException
 
 async def get_user_info(access_token: str) -> Optional[Dict]:
     user_info_url = "https://api.github.com/user"
@@ -72,28 +73,35 @@ async def login_with_github():
 
 @router.get("/auth/github/callback")
 async def auth_callback(code: str, db: Session = Depends(get_db)):
-
     access_token = await get_access_token(code)
     if not access_token:
         raise HTTPException(status_code=400, detail="Failed to retrieve access token")
 
     user_data = await get_user_info(access_token)
-    
     if not user_data:
         raise HTTPException(status_code=400, detail="Failed to retrieve user info")
-    # return user_data
-    gh_user = db.query(User).filter(User.email == user_data["email"]).first()
 
-    if gh_user:
-        token = create_access_token(user_data["login"])
-    else:
-        new_user = User(
+   
+    user = db.query(Response).filter(Response.email == user_data["email"]).first()
+    
+    
+    if not user:
+        
+        user = Response(
             username=user_data["login"],
             email=user_data["email"],
-            hashed_password=generate_password()
+            hashed_password=generate_password(),
         )
-        db.add(new_user)
+        db.add(user)
         db.commit()
-        token = create_access_token(user_data["login"])
-
-    return {"token": token, "token_type": "bearer"}
+    token = create_access_token(user.email)   
+    response_model=JSONResponse(
+        content={
+            "token": token,
+            "token_type": "bearer" ,
+            "user":jsonable_encoder(user,exclude={
+                "hashed_password",
+            })
+        })
+       
+    return response_model
