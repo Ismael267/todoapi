@@ -1,4 +1,4 @@
-# install python pacakges
+# install python packages
 
 ```python
 pip install -r requirements.txt
